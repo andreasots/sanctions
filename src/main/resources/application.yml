@@ -1,0 +1,17 @@
+micronaut:
+  application:
+    name: sanctions
+
+datasources:
+  default:
+    url: jdbc:postgresql://localhost/sanctions
+    username: andreas
+    password: password
+    driver-class-name: org.postgresql.Driver
+    auto-commit: false
+
+endpoints:
+  health:
+    enabled: true
+    sensitive: false
+    details-visible: ANONYMOUS

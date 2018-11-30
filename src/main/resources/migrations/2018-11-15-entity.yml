@@ -1,0 +1,65 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2018-11-15-entity
+      author: andreas
+      changes:
+        - createTable:
+            tableName: entities
+            columns:
+              - column:
+                  name: source
+                  type: TEXT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: type
+                  type: TEXT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: dates_of_birth
+                  type: TEXT[]
+                  constraints:
+                    nullable: false
+        - addPrimaryKey:
+            tableName: entities
+            columnNames: source, id
+        - createTable:
+            tableName: aliases
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: entity_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: entity_source
+                  type: TEXT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: names
+                  type: TEXT[]
+                  constraints:
+                    nullable: false
+              - column:
+                  name: whole_name
+                  type: TEXT
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            constraintName: fk_aliases_entity_id_entity_source
+            baseTableName: aliases
+            baseColumnNames: entity_id, entity_source
+            referencedTableName: entities
+            referencedColumnNames: id, source

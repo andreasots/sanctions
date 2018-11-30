@@ -1,0 +1,3 @@
+entity-packages: eu.qrpth.sanctions.domain
+transactional-packages: eu.qrpth.sanctions
+querybean-packages: eu.qrpth.sanctions

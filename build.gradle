@@ -1,0 +1,115 @@
+plugins {
+    id "io.spring.dependency-management" version "1.0.6.RELEASE"
+    id "com.github.johnrengelman.shadow" version "4.0.0"
+    id "org.jetbrains.kotlin.jvm" version "1.2.61"
+    id "org.jetbrains.kotlin.kapt" version "1.2.61"
+    id "org.jetbrains.kotlin.plugin.allopen" version "1.2.61"
+    id "org.openrepose.gradle.plugins.jaxb" version "2.5.0"
+    id "io.ebean" version "11.26.1"
+}
+
+apply plugin: "application"
+apply plugin: "java"
+
+version "0.1"
+group "sanctions"
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url "https://jcenter.bintray.com" }
+}
+
+dependencyManagement {
+    imports {
+        mavenBom 'io.micronaut:micronaut-bom:1.0.1'
+    }
+}
+
+dependencies {
+    compile "io.micronaut:micronaut-http-client"
+    compile "io.micronaut:micronaut-http-server-netty"
+    compile "info.picocli:picocli"
+    compile "io.micronaut.configuration:micronaut-picocli"
+    compile "io.micronaut.configuration:micronaut-jdbc-hikari"
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}"
+    compile "org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}"
+    compile "io.micronaut:micronaut-runtime"
+    compile "javax.annotation:javax.annotation-api"
+    compile "org.quartz-scheduler:quartz:2.2.1"
+    compile "io.micronaut:micronaut-management"
+    compile "io.micronaut.configuration:micronaut-micrometer-core"
+    compile 'org.liquibase:liquibase-core:3.6.1'
+    compile "io.micronaut:micronaut-http-client"
+    compile 'io.ebean:ebean:11.26.1'
+    kapt "io.micronaut:micronaut-inject-java"
+    kapt "io.micronaut:micronaut-validation"
+    kaptTest "io.micronaut:micronaut-inject-java"
+    runtime "ch.qos.logback:logback-classic:1.2.3"
+    runtime 'org.postgresql:postgresql:42.2.5'
+    testCompile "org.junit.jupiter:junit-jupiter-api:5.1.0"
+    testCompile "org.jetbrains.spek:spek-api:1.1.5"
+    testCompile 'io.ebean.test:ebean-test-config:11.26.1'
+    testRuntime "org.junit.jupiter:junit-jupiter-engine:5.1.0"
+    testRuntime "org.jetbrains.spek:spek-junit-platform-engine:1.1.5"
+
+    compile 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
+    runtime 'com.sun.xml.bind:jaxb-core:2.3.0.1'
+    runtime 'com.sun.xml.bind:jaxb-impl:2.4.0-b180830.0438'
+
+    jaxb 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
+    jaxb 'com.sun.xml.bind:jaxb-core:2.3.0.1'
+    jaxb 'com.sun.xml.bind:jaxb-impl:2.4.0-b180830.0438'
+    jaxb 'com.sun.xml.bind:jaxb-xjc:2.4.0-b180830.0438'
+    jaxb 'javax.activation:activation:1.1.1'
+}
+
+shadowJar {
+    mergeServiceFiles()
+}
+
+run.jvmArgs('-noverify', '-XX:TieredStopAtLevel=1')
+
+mainClassName = "eu.qrpth.sanctions.Application"
+
+test {
+    useJUnitPlatform()
+}
+
+allOpen {
+	annotation("io.micronaut.aop.Around")
+}
+
+compileKotlin {
+    dependsOn(':xjc')
+	kotlinOptions {
+	    jvmTarget = '1.8'
+	    //Will retain parameter names for Java reflection
+	    javaParameters = true 
+	}
+}
+
+compileTestKotlin {
+	kotlinOptions {
+	    jvmTarget = '1.8'
+	    javaParameters = true 
+	}
+}
+
+jaxb {
+    xjc {
+        taskClassname = "com.sun.tools.xjc.XJC2Task"
+    }
+}
+
+compileJava {
+    dependsOn(':xjc')
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs += "${project.buildDir}/generated-sources/xjc"
+        }
+    }
+}

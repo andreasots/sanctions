@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2018-11-13-quartz
+      author: andreas
+      changes:
+        - sqlFile:
+            path: migrations/2018-11-13-quartz-up.sql
+        - rollback:
+            sqlFile:
+              path: migrations/2018-11-13-quartz-down.sql

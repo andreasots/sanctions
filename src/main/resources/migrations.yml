@@ -1,0 +1,5 @@
+databaseChangeLog:
+  - include:
+      file: migrations/2018-11-13-quartz.yml
+  - include:
+      file: migrations/2018-11-15-entity.yml
